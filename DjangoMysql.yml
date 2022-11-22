@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: djangomysql
+spec:
+  selector:
+    matchLabels:
+      app: djangomysql
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: djangomysql
+        role: djangomysql
+    spec:
+      containers:
+        - name: djangomysql
+          image: alvaroos/web-db:latest
+          env:   # Setting Environmental Variables
+            - name: DB_HOST   # Setting Database host address
+              value: mysql
+            - name: MYSQL_ROOT_PASSWORD # Setting Database password
+              value: root
+
+---
+# Define a 'Service' To Expose the application
+apiVersion: v1
+kind: Service
+metadata:
+  name: djangomysql-service
+spec:
+  type: NodePort
+  selector:
+    role: djangomysql
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30966

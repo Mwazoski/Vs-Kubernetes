@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: djangosqlite3 
+  labels:
+    app: djangosqlite3
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: djangosqlite3
+  template:
+    metadata:
+      labels:
+        app: djangosqlite3
+        role: djangosqlite3
+    spec:
+      containers:
+      - name: djangosqlite3
+        image: alvaroos/web:latest
+        ports:
+        - containerPort: 5000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: expose-djangosqlite3
+
+spec:
+  type: NodePort
+  selector:
+    role: djangosqlite3
+  ports:
+  - port: 5000
+    targetPort: 5000
+    nodePort: 30966
+
